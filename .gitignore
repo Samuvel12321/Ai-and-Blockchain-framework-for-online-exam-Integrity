@@ -1,0 +1,13 @@
+venv* 
+env 
+.env 
+*.pt 
+*.pth 
+*.bin 
+*.h5 
+*.safetensors 
+*.onnx 
+*.mp4 
+*.zip 
+__pycache__/ 
+node_modules/ 
