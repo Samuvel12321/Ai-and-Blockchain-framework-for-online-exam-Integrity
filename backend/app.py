@@ -34,7 +34,7 @@ def home():
 
     return jsonify({
         "status": "success",
-        "message": "EduView Backend is running",
+        "message": "Backend is running",
         "camera": camera_service.is_running(),
         "ai": True
     })
@@ -329,24 +329,35 @@ def verify_blockchain_session(session_id):
 
 # PROCTORING STATUS
 def generate_frames():
-
     while camera_service.is_running():
-
         frame = camera_service.get_frame()
 
         if frame is None:
             continue
 
-        # ----------------------------------------------------
-        # AI PROCESSING
-        # ----------------------------------------------------
-
+        # Run all AI models
         processed_frame = ai_engine.process_frame(frame)
 
-        # ----------------------------------------------------
-        # ENCODE FRAME
-        # ----------------------------------------------------
+        # Get combined AI detection data
+        detection_data = ai_engine.get_detection_data()
 
+        # Send AI detection to Proctoring Manager
+        proctoring_manager.process_detection(detection_data)
+
+        # Get current proctoring state
+        proctoring_status = proctoring_manager.get_status()
+
+        # Synchronize proctoring data with active exam session
+        active_session = session_manager.get_active_session()
+
+        if active_session is not None:
+            session_manager.update_session(
+                event_count=proctoring_status["event_count"],
+                risk_score=proctoring_status["risk_score"],
+                risk_level=proctoring_status["risk_level"]
+            )
+
+        # Encode processed frame
         success, buffer = cv2.imencode(
             ".jpg",
             processed_frame
@@ -363,7 +374,6 @@ def generate_frames():
             + frame_bytes
             + b"\r\n"
         )
-
 
 # ============================================================
 # VIDEO FEED
@@ -385,7 +395,7 @@ def video_feed():
 if __name__ == "__main__":
 
     print("=" * 60)
-    print("EduView Custom Backend")
+    print("Blockchain and Ai Framework for Online Exam Integrity Custom Backend")
     print("=" * 60)
 
     print("Server: http://localhost:5000")
@@ -402,8 +412,9 @@ if __name__ == "__main__":
     print("=" * 60)
 
     app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=True,
-        threaded=True
+    host="0.0.0.0",
+    port=5000,
+    debug=True,
+    threaded=True,
+    use_reloader=False
     )
