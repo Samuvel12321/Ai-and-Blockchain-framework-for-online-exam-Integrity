@@ -1,13 +1,43 @@
-venv* 
-env 
-.env 
-*.pt 
-*.pth 
-*.bin 
-*.h5 
-*.safetensors 
-*.onnx 
-*.mp4 
-*.zip 
-__pycache__/ 
-node_modules/ 
+# Python virtual environments
+venv/
+venv311/
+env/
+
+# Environment / secrets
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# ML model files
+*.pt
+*.pth
+*.bin
+*.h5
+*.safetensors
+*.onnx
+
+# Large video files
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+
+# Node
+node_modules/
+dist/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
